@@ -6,5 +6,6 @@ package com.raviteja.ravitejalibrary;
 public class Utils {
     public static String sampleMethod() {
         return "Hai Sir, How are you?";
+
     }
 }
