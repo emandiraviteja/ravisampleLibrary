@@ -1,0 +1,87 @@
+apply plugin: 'com.android.library'
+apply plugin: 'maven-publish'
+apply plugin: 'signing'
+
+android {
+    namespace 'com.raviteja.ravitejalibrary'
+    compileSdk 34
+
+    defaultConfig {
+        minSdk 26
+
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        consumerProguardFiles "consumer-rules.pro"
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+}
+
+dependencies {
+
+    implementation libs.appcompat
+    implementation libs.material
+    testImplementation libs.junit
+    androidTestImplementation libs.ext.junit
+    androidTestImplementation libs.espresso.core
+}
+
+publishing {
+    publications {
+        release(MavenPublication) {
+            from components.findByName('release')
+
+            groupId = 'com.example'
+            artifactId = 'samplejavalibrary'
+            version = '1.0.0'
+
+            pom {
+                name = 'SampleJavaLibrary'
+                description = 'A sample Android library written in Java'
+                url = 'https://github.com/yourusername/samplejavalibrary'
+                licenses {
+                    license {
+                        name = 'The Apache License, Version 2.0'
+                        url = 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+                    }
+                }
+                developers {
+                    developer {
+                        id = 'yourusername'
+                        name = 'Your Name'
+                        email = 'youremail@example.com'
+                    }
+                }
+                scm {
+                    connection = 'scm:git:github.com/yourusername/samplejavalibrary.git'
+                    developerConnection = 'scm:git:ssh://github.com:yourusername/samplejavalibrary.git'
+                    url = 'https://github.com/yourusername/samplejavalibrary'
+                }
+            }
+        }
+    }
+
+    repositories {
+        maven {
+            name = 'OSSRH'
+            url = uri('https://oss.sonatype.org/service/local/staging/deploy/maven2/')
+            credentials {
+                username = project.findProperty("ossrhUsername") ?: ""
+                password = project.findProperty("ossrhPassword") ?: ""
+            }
+        }
+    }
+}
+
+signing {
+    useGpgCmd()
+    sign publishing.publications
+}
